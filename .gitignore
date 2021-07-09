@@ -1,0 +1,13 @@
+node_modules
+dist
+logs
+.env
+
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
