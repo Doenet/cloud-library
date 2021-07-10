@@ -12,7 +12,7 @@ async function doenetFetch( worksheetUrl, url, initialOptions ) {
   if (!options.headers) options.headers = {};
   options.headers.Authorization = 'Bearer ' + token;
   options.headers['X-Worksheet'] = worksheetUrl;
-  
+
   let userId = jwt.payload.sub;
   let audience = jwt.payload.aud;
   let clientId = jwt.payload.client_id;
@@ -65,14 +65,17 @@ export async function getScore( uri ) {
 async function put( kind, value, uri ) {
   let url = uri;
   if (uri === undefined) url = window.location.toString();
-
+  
+  const body = JSON.stringify(value);
+  
   return doenetFetch( url, kind, {
     method: 'PUT',
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-Body-SHA256': await sha256(body)
     },
-    body: JSON.stringify(value)
+    body
   });
 }
 
