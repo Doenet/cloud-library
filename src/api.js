@@ -1,6 +1,7 @@
 import { decode as decodeJwt } from "./jwt";
 import getAccessToken from "./token";
 import sha256 from "./sha256";
+import JWP from 'json-work-proof';
 
 async function doenetFetch( worksheetUrl, url, initialOptions ) {
   const token = await getAccessToken();
@@ -13,6 +14,25 @@ async function doenetFetch( worksheetUrl, url, initialOptions ) {
   options.headers.Authorization = 'Bearer ' + token;
   options.headers['X-Worksheet'] = worksheetUrl;
 
+  options.headers.Accept = 'application/json';
+
+  if ('body' in options) {
+    const body = JSON.stringify(options.body);
+    options.body = body;
+    
+    options.headers['Content-Type'] = 'application/json';
+
+    const bodyHash = await sha256(body);
+    options.headers['X-Body-SHA256'] = bodyHash;
+
+    // TODO: the difficulty should be chosen by the server
+    const jwp = new JWP(10);
+    const workToken = await jwp.generate({ sub: jwt.payload.sub,
+                                           worksheet: worksheetUrl,
+                                           body: bodyHash });
+    options.headers['X-JSON-Work-Proof'] = workToken;
+  }
+  
   let userId = jwt.payload.sub;
   let audience = jwt.payload.aud;
   let clientId = jwt.payload.client_id;
@@ -62,37 +82,26 @@ export async function getScore( uri ) {
   return null;
 }
 
-async function put( kind, value, uri ) {
+async function put( kind, body, uri ) {
   let url = uri;
   if (uri === undefined) url = window.location.toString();
   
-  const body = JSON.stringify(value);
-  
   return doenetFetch( url, kind, {
     method: 'PUT',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'X-Body-SHA256': await sha256(body)
-    },
     body
   });
 }
 
-export async function putState( value, uri ) {
-  return put( 'state', value, uri );
+export async function putState( state, uri ) {
+  return put( 'state', state, uri );
 }
 
-export async function putScore( value, uri ) {
+export async function putScore( score, uri ) {
   let url = uri;
   if (uri === undefined) url = window.location.toString();
 
   return doenetFetch( url, 'score', {
     method: 'PUT',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'text/plain'
-    },
-    body: parseFloat(value).toString()
+    body: { score }
   });
 }

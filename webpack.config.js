@@ -8,11 +8,18 @@ module.exports = {
     library: "$",
     libraryTarget: "umd",
   },
+  resolve: {
+    fallback: {
+      "crypto": require.resolve("crypto-browserify"),
+      "buffer": require.resolve("buffer"),
+      "stream": require.resolve("stream-browserify")
+    }
+  },
   module: {
     rules: [
       {
         test: /\.(js)$/,
-        exclude: /node_modules/,
+        exclude: /node_modules(?!\/json-work-proof)/,
         use: "babel-loader",
       },
     ],
