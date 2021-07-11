@@ -47,8 +47,6 @@ async function doenetFetch( worksheetUrl, url, initialOptions ) {
   const resolvedAudience = new URL(`worksheets/${worksheetHash}/users/${userId}/`, audience);
   const endpoint = new URL(url, resolvedAudience);
 
-  console.log(endpoint.toString(), options);
-
   return window.fetch(endpoint, options);
 }
 
@@ -75,7 +73,6 @@ export async function getScore( uri ) {
 
   if (response.ok) {
     const payload = await response.json();
-    console.log(payload);
     return payload.score;
   }
   
