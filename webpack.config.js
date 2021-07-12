@@ -7,6 +7,7 @@ module.exports = {
     filename: "index_bundle.js",
     library: "$",
     libraryTarget: "umd",
+    globalObject: "this"
   },
   resolve: {
     fallback: {
@@ -24,5 +25,5 @@ module.exports = {
       },
     ],
   },
-  mode: "development",
+  mode: "development"
 };

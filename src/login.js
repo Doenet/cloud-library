@@ -7,7 +7,7 @@ function logout() {
 }
 
 async function login(target) {
-  let url = new URL('https://doenet.cloud/');
+  let url = new URL('https://id.doenet.cloud/');
   if (target) {
     url = new URL(target);
   }

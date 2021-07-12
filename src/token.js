@@ -30,7 +30,7 @@ export default async function get() {
   const target = window.localStorage.getItem(`doenet.cloud:target`);
   window.localStorage.removeItem('doenet.cloud:target');
   
-  let url = new URL('https://doenet.cloud/');
+  let url = new URL('https://id.doenet.cloud/');
   if (target) {
     url = new URL(target);
   }
