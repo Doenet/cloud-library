@@ -10,9 +10,8 @@ async function login(target) {
   let url = new URL('https://id.doenet.cloud/');
   if (target) {
     url = new URL(target);
+    window.localStorage.setItem(`doenet.cloud:target`, target);    
   }
-  
-  window.localStorage.setItem(`doenet.cloud:target`, target);
   
   url.pathname = '/authorize';
     
